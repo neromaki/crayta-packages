@@ -1,0 +1,186 @@
+<html>
+    <head>
+        <!-- Required includes -->
+        <script type="text/javascript" src="coui://uiresources/js/crayta.js"></script>
+
+        <style type="text/css">
+	        body,
+	        .container {
+	        	height: 100vh;
+	        	width: 100vw;
+	        	padding: 0;
+	        	margin: 0;	      	
+	        }
+	        
+	        body {
+	        	overflow: hidden;
+	        }
+	        
+        	.target {
+        		position: absolute;
+        		top: 50%;
+        		left: 50%;
+        		transform: translate(-50%, -50%);
+        		
+        		display: flex;
+        		flex-direction: column;
+        		align-items: center;
+        		//animation: fadeOut 3s forwards; /* uncomment to fade out the visible overlays after a set time */
+        	}
+        	
+        	@keyframes fadeOut {
+        		0%, 90% { opacity: 1; }
+        		100% { opacity: 0; }
+        	}
+        	
+        	// Pip
+			.pip {
+			  width: 0; 
+			  height: 0; 
+			  border: 1rem solid transparent;
+			  border-top-color: white;
+			}
+			
+        	.name {
+        		text-transform: uppercase;
+        		color: black;
+        		font-size: 0.75rem;        		
+        		background: white;
+        		padding: 0.5rem 1rem;
+        		margin: 0rem;
+        		min-width: 5rem;
+        	}
+        	
+        	.distance {
+        		text-transform: uppercase;
+        		color: black;
+        		font-size: 1rem;        		
+        		background: white;
+        		padding: 0.5rem 1rem;
+        		margin: 0rem;
+        		min-width: 5rem;
+        		
+        		display: flex;
+        		flex-direction: column;
+        		align-items: center;
+        	}
+			
+			.primary .pip {
+				border-width: 1.5rem;
+				border-top-color: #FF5C00;
+			}
+			.primary .name {
+				color: #FFF;
+				background: #FF5C00;
+			}
+			.primary .distance {
+				color: #FFF;
+				background: #FF5C00;
+			}
+			
+			.secondary .pip {
+				border-top-color: #00FFD1;
+			}
+			.secondary .name {
+				color: #222;
+				background: #00FFD1;
+			}
+			.secondary .distance {
+				color: #222;
+				background: #00FFD1;
+			}
+			
+			.tertiary .pip {
+				border-top-color: #F7F996;
+			}
+			.tertiary .name {
+				color: #222;
+				background: #F7F996;
+			}
+			.tertiary .distance {
+				color: #222;
+				background: #F7F996;
+			}
+        	
+        </style>
+    </head>
+
+    <body>
+    	<!-- For each target, set the absolute position from the top left of the screen based on the supplied coordinates -->
+        <div class="container" data-bind-for="target:{{data.targets}}">
+            <div class="target" data-bind-class="{{target}}.overlayType" data-bind-style-left="{{target}}.posX + '%'" data-bind-style-top="{{target}}.posY + '%'">
+            	<p class="name" data-bind-if="{{target}}.onScreen && {{target}}.name !== ''" data-bind-value="{{target}}.name"></p>
+            	<p class="distance" data-bind-if="{{target}}.onScreen && {{target}}.distance >= 0" data-bind-value="{{target}}.distance"></p>
+            	<div class="pip-container" data-bind-style-transform="'rotate(' + {{target}}.rotation + 'deg)'">
+            		<div class="pip"></div>
+            	</div>
+        	</div>
+        </div>
+
+        <script>
+            engine.createJSModel('data',
+            {
+                targets: [
+                	{
+                		name: "TARGET",
+                		distance: 22,
+                		posX: 25,
+                		posY: 25,
+                		onScreen: true,
+                		rotation: 0,
+                		overlayType: "primary",
+                	},
+                	{
+                		name: "",
+                		distance: 104,
+                		posX: 50,
+                		posY: 50,
+                		onScreen: true,
+                		rotation: 0,
+                		overlayType: "secondary",
+                	},
+                	{
+                		name: "TARGET",
+                		posX: 75,
+                		posY: 75,
+                		onScreen: true,
+                		rotation: 0,
+                		overlayType: "tertiary",
+                	},
+                	{
+                		name: "TARGET",
+                		posX: 0,
+                		posY: 25,
+                		onScreen: false,
+                		rotation: 0,
+                		overlayType: "primary",
+                	},
+                	{
+                		name: "TARGET",
+                		posX: 50,
+                		posY: 100,
+                		onScreen: false,
+                		rotation: 0,
+                		overlayType: "secondary",
+                	},
+                	{
+                		name: "",
+                		posX: 100,
+                		posY: 75,
+                		onScreen: false,
+                		rotation: 0,
+                		overlayType: "tertiary",
+                	},
+                ]
+            });
+            
+            engine.on("UpdateData", function(overlayData) {                        	
+            	data.targets = overlayData;
+            	
+                engine.updateWholeModel(data);
+                engine.synchronizeModels();
+            });
+
+        </script>
+    </body>
+</html>
